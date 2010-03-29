@@ -127,6 +127,6 @@ def HCV_hhp():
            + bg + ' ' 
            + trans + ' ' 
            + 'data/elm2prosite ' 
-           + '> results/' + net_name + '.hcv_hhp ' 
-           + '2> results/' + net_name + '.hcv_hhp.vp2h12h2.tab')
+           + 'results/' + net_name + '.hcv_hhp ' 
+           + 'results/' + net_name + '.hcv_hhp.vp2h12h2.tab')
         
