@@ -48,6 +48,85 @@ def HCV_elms():
        + '1> data/HCV.conserved.90 '
        + '2> data/HCV.conservation')
 
+def get_ls():
+    """net_name, trans, ps_scan, net, elms, bg"""
+
+    ls = [ ['OPHID',
+            '../Thesis/Data/Network/Human/OPHID/swissProt2entrez',
+            '../Thesis/Data/ProfileScan/OPHID.fasta.ps_scan.parsed',
+            '../Thesis/Data/Network/Human/OPHID/ophid.swiss',
+            '../Thesis/Data/ELM/Human/OPHID/ophid.elms',
+            'OPHID.bg'],
+           ['STRING',
+            '../Thesis/Data/Network/Human/STRING/ensp2entrez',
+            '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
+            '../Thesis/Data/Network/Human/STRING/human.string.intr',
+            '../Thesis/Data/ELM/Human/STRING/string.elms',
+            'STRING.bg']]#,
+           #['HPRD',
+           # '../Thesis/Data/Network/Human/HPRD/version2entrezgeneid_new',
+           # '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
+    #'../Thesis/Data/Network/Human/HPRD/hprd_new.intr',
+#'../Thesis/Data/ELM/Human/HPRD/hprd.elms',
+#HPRD.bg] ]
+    return ls
+
+@task
+def domains():
+    """Merge PROSITE domains w/ myLists"""
+
+    for net_name, trans, ps_scan, net, elms, bg in get_ls():
+        sh('python mylist2annotation.py '
+           + '../Thesis/Data/ProfileScan/MyLists/ '
+           + trans + ' '
+           + 'data/' + net_name + '.mylist')
+        sh('cat data/'
+           + net_name + '.mylist '
+           + ps_scan 
+           + '> data/'
+           + net_name + '.ps_mylist')
+        sh('cut -f 1 data/'
+           + net_name + '.ps_mylist | sort -u > '
+           + net_name + '.ps_mylist.ls')
+        sh('cut -f 1 '
+           + net 
+           + ' | sort -u > 1')
+        sh('cut -f 2 '
+           + net
+           + ' | sort -u > 2')
+        sh('cat 1 2 | sort -u > '
+           + net_name + '.ls')
+        sh('intersect.py '
+           + net_name + '.ls '
+           + net_name + '.ps_mylist.ls '
+           + '> '
+           + net_name + '.bg_pre')
+        # only use those that can be translated
+        # to entrez genes
+        sh('cut -f 1 '
+           + trans
+           + ' | sort -u > trans1')
+        sh('intersect.py '
+           + net_name
+           + '.bg_pre trans1 > '
+           + bg)
+
 @task
 def HCV_hhp():
     """Predict human interactors"""
+
+    for net_name, trans, ps_scan, net, elms, bg in get_ls():
+        sh('python predict_cd_elm.py ' 
+           + 'data/HCV.conserved.90 ' 
+           + 'ELM '
+           + elms + ' '
+           + 'ELM '
+           + ps_scan + ' '
+           + 'ProfileScan '
+           + net + ' ' 
+           + bg + ' ' 
+           + trans + ' ' 
+           + 'data/elm2prosite ' 
+           + '> results/' + net_name + '.hcv_hhp ' 
+           + '2> results/' + net_name + '.hcv_hhp.vp2h12h2.tab')
+        
