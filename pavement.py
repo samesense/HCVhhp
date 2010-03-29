@@ -38,7 +38,7 @@ def HCV_elms():
     """Annotate HCV multiple alignments from LANL"""
     
     sh('python matchELMpattern.py '
-       + 'data/elm_expressions.txt '
+       + 'data/elm2pattern '
        + 'data/HCV.fasta '
        + '> data/HCV.elms')
     sh('python getConserved.py '
@@ -47,3 +47,7 @@ def HCV_elms():
        + '90 '
        + '1> data/HCV.conserved.90 '
        + '2> data/HCV.conservation')
+
+@task
+def HCV_hhp():
+    """Predict human interactors"""
