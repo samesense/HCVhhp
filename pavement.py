@@ -77,6 +77,7 @@ def get_ls():
 @task
 def OPHID_domains():
     """Find CDs for HCV ELMs for OPHID"""
+
     sh('python scan_prosite.py '
        + 'data/elm2prosite '
        + '~/bioperry/Projects/Thesis/Data/FASTA/Human/ophid.fasta '
@@ -101,6 +102,7 @@ def STRING_domains():
 @task
 def HPRD_domains():
     """Find CDs for HCV ELMs for HPRD"""
+
     sh('python scan_prosite.py '
        + 'data/elm2prosite '
        + '~/bioperry/Projects/Thesis/Data/FASTA/Human/hprd_new.intr.fasta '
