@@ -88,32 +88,38 @@ def domains():
         sh('cut -f 1 data/'
            + net_name + '.ps_mylist | sort -u > '
            + net_name + '.ps_mylist.ls')
+        # restrict background to network genes
+        # with an entrez translation
         sh('cut -f 1 '
-           + net 
+           + net
            + ' | sort -u > 1')
         sh('cut -f 2 '
            + net
            + ' | sort -u > 2')
-        sh('cat 1 2 | sort -u > '
+        sh('cat 1 2 | sort -u > 12')
+        sh('cut -f 1 '
+           + trans + ' | sort -u > '
+           + net_name + '.ls_pre')
+        sh('intersect.py '
+           + net_name + '.ls_pre 12 > '
            + net_name + '.ls')
+        sh('python convertVersion2EntrezGeneID2.py '
+           + net_name + '.ls '
+           + trans + ' > '
+           + net_name + '.ls.entrez')
+        # additional restriction on background
+        # to genes with PROSITE matches
         sh('intersect.py '
            + net_name + '.ls '
            + net_name + '.ps_mylist.ls '
            + '> '
-           + net_name + '.bg_pre')
-        # only use those that can be translated
-        # to entrez genes
-        sh('cut -f 1 '
-           + trans
-           + ' | sort -u > trans1')
-        sh('intersect.py '
-           + net_name
-           + '.bg_pre trans1 > '
-           + bg)
+           + net_name + '.bg')
         sh('python convertVersion2EntrezGeneID2.py '
            + net_name + '.bg '
            + trans
            + '> ' + net_name + '.bg.entrez')
+        sh('rm ' + net_name + '.ls_pre')
+    sh('rm 1 2 12')
 
 @task
 def HCV_hhp():
@@ -128,12 +134,12 @@ def HCV_hhp():
            + ps_scan + ' '
            + 'ProfileScan '
            + net + ' ' 
-           + bg + ' ' 
+           + net_name + '.ls ' 
            + trans + ' ' 
            + 'data/elm2prosite ' 
            + 'results/' + net_name + '.hcv_hhp ' 
            + 'results/' + net_name + '.hcv_hhp.vp2h12h2.tab')
-
+ 
 @task
 def HCV_pr_rec():
     """Recall & precision for HHP"""
@@ -142,6 +148,6 @@ def HCV_pr_rec():
         sh('python pr_for_elm_predictions.py '
            + '../Thesis/Data/Network/HCV/hcv.hhe '
            + 'results/' + net_name + '.hcv_hhp '
-           + bg + '.entrez '
-           + '> results/' + net_name + '.tab')
+           + net_name + '.ls.entrez '
+           + 'results/' + net_name + '.tab')
         
