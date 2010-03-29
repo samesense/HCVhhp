@@ -53,23 +53,62 @@ def get_ls():
 
     ls = [ ['OPHID',
             '../Thesis/Data/Network/Human/OPHID/swissProt2entrez',
-            '../Thesis/Data/ProfileScan/OPHID.fasta.ps_scan.parsed',
+            #'../Thesis/Data/ProfileScan/OPHID.fasta.ps_scan.parsed',
+            'data/OPHID.ps_scan',
             '../Thesis/Data/Network/Human/OPHID/ophid.swiss',
             '../Thesis/Data/ELM/Human/OPHID/ophid.elms',
             'OPHID.bg'],
            ['STRING',
             '../Thesis/Data/Network/Human/STRING/ensp2entrez',
-            '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
+#            '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
+            'data/STRING.ps_scan'
             '../Thesis/Data/Network/Human/STRING/human.string.intr',
             '../Thesis/Data/ELM/Human/STRING/string.elms',
             'STRING.bg']]#,
            #['HPRD',
            # '../Thesis/Data/Network/Human/HPRD/version2entrezgeneid_new',
            # '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
+    #'data/HPRD.ps_scan',
     #'../Thesis/Data/Network/Human/HPRD/hprd_new.intr',
 #'../Thesis/Data/ELM/Human/HPRD/hprd.elms',
 #HPRD.bg] ]
     return ls
+
+@task
+def OPHID_domains():
+    """Find CDs for HCV ELMs for OPHID"""
+    sh('python scan_prosite.py '
+       + 'data/elm2prosite '
+       + '~/bioperry/Projects/Thesis/Data/FASTA/Human/ophid.fasta '
+       + 'data/OPHID.fasta.hhp.ps_scan '
+       + 'data/HCV.conserved.90')
+    sh('python parse_prosite.py '
+       + 'data/OPHID.fasta.hhp.ps_scan '
+       + '> data/OPHID.ps_scan')
+
+@task
+def STRING_domains():
+    """Find CDs for HCV ELMs for STRING"""
+    sh('python scan_prosite.py '
+       + 'data/elm2prosite '
+       + '~/bioperry/Projects/Thesis/Data/FASTA/Human/STRING.fasta '
+       + 'data/STRING.fasta.hhp.ps_scan '
+       + 'data/HCV.conserved.90')
+    sh('python parse_prosite.py '
+       + 'data/STRING.fasta.hhp.ps_scan '
+       + '> data/STRING.ps_scan')
+
+@task
+def HPRD_domains():
+    """Find CDs for HCV ELMs for HPRD"""
+    sh('python scan_prosite.py '
+       + 'data/elm2prosite '
+       + '~/bioperry/Projects/Thesis/Data/FASTA/Human/hprd_new.intr.fasta '
+       + 'data/HPRD.fasta.hhp.ps_scan '
+       + 'data/HCV.conserved.90')
+    sh('python parse_prosite.py '
+       + 'data/HPRD.fasta.hhp.ps_scan '
+       + '> data/HPRD.ps_scan')
 
 @task
 def domains():
