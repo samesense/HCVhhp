@@ -110,6 +110,10 @@ def domains():
            + net_name
            + '.bg_pre trans1 > '
            + bg)
+        sh('python convertVersion2EntrezGeneID2.py '
+           + net_name + '.bg '
+           + trans
+           + '> ' + net_name + '.bg.entrez')
 
 @task
 def HCV_hhp():
@@ -129,4 +133,15 @@ def HCV_hhp():
            + 'data/elm2prosite ' 
            + 'results/' + net_name + '.hcv_hhp ' 
            + 'results/' + net_name + '.hcv_hhp.vp2h12h2.tab')
+
+@task
+def HCV_pr_rec():
+    """Recall & precision for HHP"""
+
+    for net_name, trans, ps_scan, net, elms, bg in get_ls():
+        sh('python pr_for_elm_predictions.py '
+           + '../Thesis/Data/Network/HCV/hcv.hhe '
+           + 'results/' + net_name + '.hcv_hhp '
+           + bg + '.entrez '
+           + '> results/' + net_name + '.tab')
         
