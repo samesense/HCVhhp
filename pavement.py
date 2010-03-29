@@ -3,11 +3,11 @@ from paver.easy import *
 
 @task
 def HCV_seq_setup():
-    """ Parse LANL HCV fasta files """
+    """Parse LANL HCV fasta files"""
     
     hcv_proteins = ['ARFP', 'CORE', 'E1', 'E2',
                     'NS2', 'NS3', 'NS4A', 'NS4B',
-                    'NS5A', 'NS5B', 'P7']:
+                    'NS5A', 'NS5B', 'P7']
     for hcv_protein in hcv_proteins:
         if hcv_protein == 'ARFP':
             suffix = 'F'
@@ -20,7 +20,9 @@ def HCV_seq_setup():
            + suffix + ' '
            + 'data/'
            + suffix
-           + '.proteins > '
+           + '.proteins '
+           + 'data/' + suffix + '.new2old '
+           + 'data/' + suffix + '.old2new > '
            + 'data/'
            + suffix
            + '.clean.fasta')
@@ -28,14 +30,20 @@ def HCV_seq_setup():
        + '> data/HCV.fasta')
     sh("grep '>' "
        + 'data/HCV.fasta '
+       + "| sed 's/>//g' "
        + '> data/HCV.proteins')
 
 @task
-def hcv_elms():
+def HCV_elms():
     """Annotate HCV multiple alignments from LANL"""
     
-    for hcv_protein in ('F', 'CORE', 'E1', 'E2',
-                        'NS2', 'NS3', 'NS4A', 'NS4B', 
-                        'NS5A', 'NS5B', 'P7'):
-        sh('wget ' + protein + ' --output-document='
-           + protein + 'fa')
+    sh('python matchELMpattern.py '
+       + 'data/elm_expressions.txt '
+       + 'data/HCV.fasta '
+       + '> data/HCV.elms')
+    sh('python getConserved.py '
+       + 'data/HCV.elms '
+       + 'ELM '
+       + '90 '
+       + '1> data/HCV.conserved.90 '
+       + '2> data/HCV.conservation')
