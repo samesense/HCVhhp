@@ -61,17 +61,17 @@ def get_ls():
            ['STRING',
             '../Thesis/Data/Network/Human/STRING/ensp2entrez',
 #            '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
-            'data/STRING.ps_scan'
+            'data/STRING.ps_scan',
             '../Thesis/Data/Network/Human/STRING/human.string.intr',
             '../Thesis/Data/ELM/Human/STRING/string.elms',
-            'STRING.bg']]#,
-           #['HPRD',
-           # '../Thesis/Data/Network/Human/HPRD/version2entrezgeneid_new',
+            'STRING.bg'],
+           ['HPRD',
+            '../Thesis/Data/Network/Human/HPRD/version2entrezgeneid_new',
            # '../Thesis/Data/ProfileScan/STRING.human.ps_scan.parsed',
-    #'data/HPRD.ps_scan',
-    #'../Thesis/Data/Network/Human/HPRD/hprd_new.intr',
-#'../Thesis/Data/ELM/Human/HPRD/hprd.elms',
-#HPRD.bg] ]
+            'data/HPRD.ps_scan',
+            '../Thesis/Data/Network/Human/HPRD/hprd_new.intr',
+            '../Thesis/Data/ELM/Human/HPRD/hprd_new.elms',
+            'HPRD.bg'] ]
     return ls
 
 @task
@@ -191,4 +191,13 @@ def HCV_pr_rec():
            + 'results/' + net_name + '.hcv_hhp '
            + net_name + '.ls.entrez '
            + 'results/' + net_name + '.tab')
+
+@task
+def print_ELM_CD_table():
+    """make the ELM-CD table"""
         
+    sh('python mkPrettyELMcdTable.py '
+       + 'data/elm2prosite '
+       + '../temp/HIV/Predict_NIAID_by_Clusters/Data_v1/prosite.id2name '
+       + '../Thesis/Data/ProfileScan/MyLists/ '
+       + 'elm_cd.tab')
