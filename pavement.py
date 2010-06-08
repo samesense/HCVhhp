@@ -164,7 +164,7 @@ def domains():
 
 @task
 def HCV_hhp():
-    """Predict human interactors"""
+    """Predict human interactors, not restrictd to domain proteins"""
 
     for net_name, trans, ps_scan, net, elms, bg in get_ls():
         sh('python predict_cd_elm.py ' 
@@ -191,6 +191,12 @@ def HCV_pr_rec():
            + 'results/' + net_name + '.hcv_hhp '
            + net_name + '.ls.entrez '
            + 'results/' + net_name + '.tab')
+
+@task
+def GOsim():
+    """Make table of pvalues for GOsim"""
+
+    
 
 @task
 def print_ELM_CD_table():
